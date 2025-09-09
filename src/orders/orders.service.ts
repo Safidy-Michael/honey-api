@@ -22,7 +22,7 @@ export class OrdersService {
           create: dto.items.map(i => ({
             productId: i.productId,
             quantity: i.quantity,
-            price: 0, // store price at the moment
+            price: 0, 
           })),
         },
       },
