@@ -1,7 +1,6 @@
-// src/orders/orders.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, CreateOrderItemDto } from './dto/create-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -10,7 +9,7 @@ export class OrdersService {
   async create(dto: CreateOrderDto) {
 
     const total = await Promise.all(
-      dto.items.map(async (item) => {
+      dto.items.map(async (item: CreateOrderItemDto) => {
         const product = await this.prisma.product.findUnique({
           where: { id: item.productId },
         });
@@ -19,7 +18,7 @@ export class OrdersService {
       }),
     );
 
-    const orderTotal = total.reduce((a, b) => a + b, 0);
+    const orderTotal: number = total.reduce((a: number, b: number) => a + b, 0);
 
     const order = await this.prisma.order.create({
       data: {
@@ -29,9 +28,8 @@ export class OrdersService {
       },
     });
 
-    
     await Promise.all(
-      dto.items.map(async (item) => {
+      dto.items.map(async (item: CreateOrderItemDto) => {
         const product = await this.prisma.product.findUnique({
           where: { id: item.productId },
         });
@@ -47,7 +45,6 @@ export class OrdersService {
       }),
     );
 
-    
     return this.prisma.order.findUnique({
       where: { id: order.id },
       include: { orderItems: true },
