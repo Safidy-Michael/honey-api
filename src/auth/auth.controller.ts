@@ -21,8 +21,6 @@ export class AuthController {
 @Get('profile')
 async getProfile(@Request() req: ExpressRequest) {
   const user = req.user as { userId: string } & typeof req.user;
-  console.log('👤 User object dans req.user:', user);
-  console.log('👤 userId:', user.userId, 'type:', typeof user.userId);
   
   return this.authService.profile(Number(user.userId));
 }

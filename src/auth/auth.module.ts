@@ -11,7 +11,7 @@ import { UsersModule } from '../users/users.module';
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'gkOiTfgBO3eXbousvOyr4yURMZmpAVkfN5mHC0YPRMw=',
+      secret: process.env.JWT_SECRET || 'default',
   signOptions: { expiresIn: process.env.JWT_EXPIRES || '1d' },
     }),
   ],
