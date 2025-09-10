@@ -14,8 +14,13 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+   findOne(id: number) {
+    if (!id) {
+      throw new Error('L\'id de l\'utilisateur est requis');
+    }
+    return this.prisma.user.findUnique({
+      where: { id: id },
+    });
   }
   finByEmail(email: string) {
     return this.prisma.user.findUnique({ where: { email } });
