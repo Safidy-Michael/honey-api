@@ -17,6 +17,9 @@ export class UsersService {
   findOne(id: number) {
     return this.prisma.user.findUnique({ where: { id } });
   }
+  finByEmail(email: string) {
+    return this.prisma.user.findUnique({ where: { email } });
+  }
 
   update(id: number, data: Partial<CreateUserDto>) {
     return this.prisma.user.update({ where: { id }, data });

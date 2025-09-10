@@ -7,8 +7,10 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
-  create(data: CreateProductDto) {
-    return this.prisma.product.create({ data });
+  create(dto: CreateProductDto) {
+    return this.prisma.product.create({
+      data: dto,
+    });
   }
 
   findAll() {
@@ -19,10 +21,10 @@ export class ProductsService {
     return this.prisma.product.findUnique({ where: { id } });
   }
 
-  update(id: number, data: UpdateProductDto) {
+  update(id: number, dto: UpdateProductDto) {
     return this.prisma.product.update({
       where: { id },
-      data,
+      data: dto,
     });
   }
 
