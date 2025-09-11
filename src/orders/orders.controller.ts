@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Param, Body, ParseIntPipe, Put } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Body, ParseIntPipe, Put, Req, ForbiddenException } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/create-order.dto';
@@ -23,7 +23,18 @@ export class OrdersController {
   }
   
    @Put(':id')
-update(@Param('id', ParseIntPipe) id: number, @Body() dto: Partial<CreateOrderDto> & { status?: string }) {
+update(
+  @Param('id', ParseIntPipe) id: number,
+  @Body() dto: { status?: string },
+  @Req() req: import('express').Request
+) {
+  interface User {
+    role: string;
+  }
+  const user = req.user as User;
+  if (user.role !== 'admin') {
+    throw new ForbiddenException('Seul l\'admin peut mettre à jour le statut');
+  }
   return this.ordersService.update(id, dto);
 }
 
