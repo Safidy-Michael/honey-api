@@ -45,3 +45,9 @@ export class CreateOrderDto {
   @ArrayMinSize(1)
   items!: CreateOrderItemDto[];
 }
+
+export class UpdateOrderStatusDto {
+  @IsString()
+  @IsNotEmpty()
+  status!: string;
+}

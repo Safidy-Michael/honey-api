@@ -7,7 +7,6 @@ export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateOrderDto) {
-
     const total = await Promise.all(
       dto.items.map(async (item: CreateOrderItemDto) => {
         const product = await this.prisma.product.findUnique({
@@ -18,7 +17,7 @@ export class OrdersService {
       }),
     );
 
-    const orderTotal: number = total.reduce((a: number, b: number) => a + b, 0);
+    const orderTotal: number = total.reduce((a, b) => a + b, 0);
 
     const order = await this.prisma.order.create({
       data: {
@@ -65,4 +64,17 @@ export class OrdersService {
   remove(id: number) {
     return this.prisma.order.delete({ where: { id } });
   }
+
+  async update(id: number, dto: Partial<CreateOrderDto> & { status?: string }) {
+  const order = await this.prisma.order.findUnique({ where: { id } });
+  if (!order) throw new Error('Order not found');
+
+  
+  return this.prisma.order.update({
+    where: { id },
+    data: { status: dto.status || order.status },
+    include: { orderItems: true },
+  });
+}
+
 }
