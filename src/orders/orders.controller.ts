@@ -1,7 +1,7 @@
-import { Controller, Post, Get, Delete, Param, Body, ParseIntPipe, Put, Req, ForbiddenException } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Body, ParseIntPipe, Put, ForbiddenException, Req } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderStatusDto } from './dto/create-order.dto';
+import { Request } from 'express';
 
 @Controller('orders')
 export class OrdersController {
@@ -21,22 +21,20 @@ export class OrdersController {
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.ordersService.findOne(id);
   }
-  
-   @Put(':id')
-update(
-  @Param('id', ParseIntPipe) id: number,
-  @Body() dto: { status?: string },
-  @Req() req: import('express').Request
-) {
-  interface User {
-    role: string;
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: Partial<CreateOrderDto> & { status?: string },
+    @Req() req: Request
+  ) {
+    const user = req.user as { role?: string }; 
+    if (dto.status && user?.role !== 'admin') {
+      throw new ForbiddenException('Seul l’admin peut modifier le statut de la commande.');
+    }
+
+    return this.ordersService.update(id, dto);
   }
-  const user = req.user as User;
-  if (user.role !== 'admin') {
-    throw new ForbiddenException('Seul l\'admin peut mettre à jour le statut');
-  }
-  return this.ordersService.update(id, dto);
-}
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
