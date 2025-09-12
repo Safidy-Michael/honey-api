@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto, CreateOrderItemDto } from './dto/create-order.dto';
 
@@ -12,7 +12,7 @@ export class OrdersService {
         const product = await this.prisma.product.findUnique({
           where: { id: item.productId },
         });
-        if (!product) throw new NotFoundException('Product not found');
+        if (!product) throw new Error('Product not found');
         return product.price * item.quantity;
       }),
     );
@@ -32,7 +32,7 @@ export class OrdersService {
         const product = await this.prisma.product.findUnique({
           where: { id: item.productId },
         });
-        if (!product) throw new NotFoundException('Product not found');
+        if (!product) throw new Error('Product not found');
         return this.prisma.orderItem.create({
           data: {
             orderId: order.id,
@@ -65,17 +65,17 @@ export class OrdersService {
     return this.prisma.order.delete({ where: { id } });
   }
 
-  async update(id: number, dto: Partial<CreateOrderDto> & { status?: string }) {
+  async patchUpdate(id: number, dto: Partial<CreateOrderDto> & { status?: string }) {
     const order = await this.prisma.order.findUnique({ where: { id } });
-    if (!order) throw new NotFoundException('Order not found');
+    if (!order) throw new Error('Order not found');
 
-    
     return this.prisma.order.update({
       where: { id },
       data: {
-        status: dto.status || order.status,
+        ...(dto.status ? { status: dto.status } : {}), 
       },
       include: { orderItems: true },
     });
   }
+
 }
