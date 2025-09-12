@@ -65,16 +65,17 @@ export class OrdersService {
     return this.prisma.order.delete({ where: { id } });
   }
 
-  async update(id: number, dto: Partial<CreateOrderDto> & { status?: string }) {
-  const order = await this.prisma.order.findUnique({ where: { id } });
-  if (!order) throw new Error('Order not found');
+  async patchUpdate(id: number, dto: Partial<CreateOrderDto> & { status?: string }) {
+    const order = await this.prisma.order.findUnique({ where: { id } });
+    if (!order) throw new Error('Order not found');
 
-  
-  return this.prisma.order.update({
-    where: { id },
-    data: { status: dto.status || order.status },
-    include: { orderItems: true },
-  });
-}
+    return this.prisma.order.update({
+      where: { id },
+      data: {
+        ...(dto.status ? { status: dto.status } : {}), 
+      },
+      include: { orderItems: true },
+    });
+  }
 
 }
