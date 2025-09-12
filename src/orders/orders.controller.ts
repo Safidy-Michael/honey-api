@@ -1,7 +1,10 @@
-import { Controller, Post, Get, Delete, Param, Body, ParseIntPipe, Put } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Body, ParseIntPipe, Put, Patch, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/create-order.dto';
+import { JwtAuthGuard } from '../auth/jwt.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('orders')
 export class OrdersController {
@@ -22,10 +25,16 @@ export class OrdersController {
     return this.ordersService.findOne(id);
   }
   
-   @Put(':id')
-update(@Param('id', ParseIntPipe) id: number, @Body() dto: Partial<CreateOrderDto> & { status?: string }) {
-  return this.ordersService.update(id, dto);
-}
+   
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  patchUpdate(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: Partial<CreateOrderDto> & {status?: string}
+  ){
+    return this.ordersService.patchUpdate(id, dto);
+  }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
