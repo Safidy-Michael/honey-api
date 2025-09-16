@@ -30,4 +30,9 @@ export class UsersController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
   }
+  @Post('Admin')
+  createAdmin(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.createAdmin(createUserDto);
+  }
 }
+
