@@ -1,7 +1,6 @@
-import { Controller, Post, Get, Delete, Param, Body, ParseIntPipe, Put, Patch, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Body, ParseIntPipe, Patch, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderStatusDto } from './dto/create-order.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
