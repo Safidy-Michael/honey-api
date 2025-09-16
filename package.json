@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",
+    "start:prod": "node dist/main.js",
     "build": "nest build",
     "seed": "ts-node prisma/seed.ts"
   },
@@ -28,13 +29,18 @@
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.35.0",
     "@nestjs/cli": "^11.0.10",
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.3",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.3.1",
     "@types/passport-jwt": "^4.0.1",
+    "eslint": "^9.35.0",
+    "globals": "^16.4.0",
+    "jiti": "^2.5.1",
     "prisma": "^6.15.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript-eslint": "^8.44.0"
   }
 }
