@@ -8,7 +8,8 @@
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main.js",
     "build": "nest build",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "test": "echo \"Warning: No tests specified\" && exit 0" 
   },
   "dependencies": {
     "@nestjs/common": "^11.1.6",
