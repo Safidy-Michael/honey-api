@@ -7,16 +7,21 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-
-  app.enableCors();
-
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',                        
+      'https://honey-bloom-frontend.onrender.com',  
+    ],
+    credentials: true,
+  });
   
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/', 
+    prefix: '/uploads/',
   });
 
-  await app.listen(3000);
-  console.log('Server is running on http://localhost:3000');
+  const PORT = process.env.PORT || 3000;
+  await app.listen(PORT);
+  console.log(`Server is running on port ${PORT}`);
 }
 
 bootstrap();
