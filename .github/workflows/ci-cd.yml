@@ -1,14 +1,10 @@
-name: CI Pipeline
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRES: ${{ secrets.JWT_EXPIRES }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,11 +15,11 @@ jobs:
           node-version: '20.x'
           cache: 'npm'
 
-      - name: Clean npm cache (juste au cas où)
+      - name: Clean npm cache
         run: npm cache clean --force
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps 
- 
+        run: npm install --legacy-peer-deps
+
       - name: Build project
         run: npm run build
