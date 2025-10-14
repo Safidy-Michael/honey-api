@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Param, Body, ParseIntPipe, Patch, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Body, Patch, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
@@ -20,23 +20,22 @@ export class OrdersController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);
   }
-  
-   
+
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   patchUpdate(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: Partial<CreateOrderDto> & {status?: string}
-  ){
+    @Param('id') id: string,
+    @Body() dto: Partial<CreateOrderDto> & { status?: string },
+  ) {
     return this.ordersService.patchUpdate(id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id') id: string) {
     return this.ordersService.remove(id);
   }
 }

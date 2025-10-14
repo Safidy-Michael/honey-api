@@ -17,18 +17,18 @@ export class ProductsService {
     return this.prisma.product.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.product.findUnique({ where: { id } });
+  findOne(id: string) {
+    return this.prisma.product.findUnique({ where: { id: String(id) } });
   }
 
-  update(id: number, dto: UpdateProductDto) {
+  update(id: string, dto: UpdateProductDto) {
     return this.prisma.product.update({
-      where: { id },
+      where: { id: String(id) },
       data: dto,
     });
   }
 
-  remove(id: number) {
-    return this.prisma.product.delete({ where: { id } });
+  remove(id: string) {
+    return this.prisma.product.delete({ where: { id: String(id) } });
   }
 }

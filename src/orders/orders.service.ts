@@ -10,18 +10,18 @@ export class OrdersService {
     const total = await Promise.all(
       dto.items.map(async (item: CreateOrderItemDto) => {
         const product = await this.prisma.product.findUnique({
-          where: { id: item.productId },
+          where: { id: String(item.productId) },
         });
         if (!product) throw new Error('Product not found');
         return product.price * item.quantity;
       }),
     );
 
-    const orderTotal: number = total.reduce((a, b) => a + b, 0);
+    const orderTotal = total.reduce((a, b) => a + b, 0);
 
     const order = await this.prisma.order.create({
       data: {
-        userId: dto.userId,
+        userId: String(dto.userId),
         total: orderTotal,
         status: 'pending',
       },
@@ -30,13 +30,13 @@ export class OrdersService {
     await Promise.all(
       dto.items.map(async (item: CreateOrderItemDto) => {
         const product = await this.prisma.product.findUnique({
-          where: { id: item.productId },
+          where: { id: String(item.productId) },
         });
         if (!product) throw new Error('Product not found');
         return this.prisma.orderItem.create({
           data: {
-            orderId: order.id,
-            productId: item.productId,
+            orderId: String(order.id),
+            productId: String(item.productId),
             quantity: item.quantity,
             price: product.price,
           },
@@ -45,7 +45,7 @@ export class OrdersService {
     );
 
     return this.prisma.order.findUnique({
-      where: { id: order.id },
+      where: { id: String(order.id) },
       include: { orderItems: true },
     });
   }
@@ -54,28 +54,27 @@ export class OrdersService {
     return this.prisma.order.findMany({ include: { orderItems: true } });
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.prisma.order.findUnique({
-      where: { id },
+      where: { id: String(id) },
       include: { orderItems: true },
     });
   }
 
-  remove(id: number) {
-    return this.prisma.order.delete({ where: { id } });
+  remove(id: string) {
+    return this.prisma.order.delete({ where: { id: String(id) } });
   }
 
-  async patchUpdate(id: number, dto: Partial<CreateOrderDto> & { status?: string }) {
-    const order = await this.prisma.order.findUnique({ where: { id } });
+  async patchUpdate(id: string, dto: Partial<CreateOrderDto> & { status?: string }) {
+    const order = await this.prisma.order.findUnique({ where: { id: String(id) } });
     if (!order) throw new Error('Order not found');
 
     return this.prisma.order.update({
-      where: { id },
+      where: { id: String(id) },
       data: {
-        ...(dto.status ? { status: dto.status } : {}), 
+        ...(dto.status ? { status: dto.status } : {}),
       },
       include: { orderItems: true },
     });
   }
-
 }

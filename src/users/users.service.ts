@@ -1,18 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import * as bcrypt from 'bcrypt'; 
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
-    
     return this.prisma.user.create({
       data: {
         ...createUserDto,
-        role: 'client', 
+        role: 'client',
       },
     });
   }
@@ -21,12 +20,12 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     if (!id) {
       throw new Error("L'id de l'utilisateur est requis");
     }
     return this.prisma.user.findUnique({
-      where: { id },
+      where: { id: String(id) },
     });
   }
 
@@ -34,12 +33,12 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
-  update(id: number, data: Partial<CreateUserDto>) {
-    return this.prisma.user.update({ where: { id }, data });
+  update(id: string, data: Partial<CreateUserDto>) {
+    return this.prisma.user.update({ where: { id: String(id) }, data });
   }
 
-  remove(id: number) {
-    return this.prisma.user.delete({ where: { id } });
+  remove(id: string) {
+    return this.prisma.user.delete({ where: { id: String(id) } });
   }
 
   async createAdmin(createUserDto: CreateUserDto) {
@@ -48,7 +47,7 @@ export class UsersService {
       data: {
         ...createUserDto,
         password: hashedPassword,
-        role: 'admin', 
+        role: 'admin',
       },
     });
   }
