@@ -13,8 +13,10 @@ model User {
   email     String   @unique
   password  String
   role      String   @default("client") // client | admin
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
   orders    Order[]
+
+  @@map("User")
 }
 
 model Product {
@@ -25,9 +27,11 @@ model Product {
   stock       Int      @default(0)
   badge       String?
   imageUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt @default(now())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @default(now()) @map("updated_at")
   orderItems  OrderItem[]
+
+  @@map("Product")
 }
 
 
@@ -38,8 +42,10 @@ model Order {
   userId    Int
   total     Float
   status    String      @default("pending")
-  createdAt DateTime    @default(now())
+  createdAt DateTime    @default(now()) @map("created_at")
   orderItems OrderItem[]
+
+  @@map("Order")
 }
 
 model OrderItem {
@@ -50,4 +56,6 @@ model OrderItem {
   productId Int
   quantity  Int
   price     Float
+
+  @@map("OrderItem")
 }
