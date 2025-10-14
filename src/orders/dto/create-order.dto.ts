@@ -29,7 +29,7 @@ export class CreateProductDto {
 
 export class CreateOrderItemDto {
   @IsNumber()
-  productId!: number;
+  productId!: string;
 
   @IsNumber()
   quantity!: number;
@@ -38,7 +38,7 @@ export class CreateOrderItemDto {
 
 export class CreateOrderDto {
   @IsNumber()
-  userId!: number;
+  userId!: string;
 
   @ValidateNested({ each: true })
   @Type(() => CreateOrderItemDto)
