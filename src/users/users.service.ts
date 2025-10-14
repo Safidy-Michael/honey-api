@@ -25,7 +25,7 @@ export class UsersService {
       throw new Error("L'id de l'utilisateur est requis");
     }
     return this.prisma.user.findUnique({
-      where: { id: String(id) },
+      where: { id },
     });
   }
 
@@ -34,11 +34,16 @@ export class UsersService {
   }
 
   update(id: string, data: Partial<CreateUserDto>) {
-    return this.prisma.user.update({ where: { id: String(id) }, data });
+    return this.prisma.user.update({
+      where: { id },
+      data,
+    });
   }
 
   remove(id: string) {
-    return this.prisma.user.delete({ where: { id: String(id) } });
+    return this.prisma.user.delete({
+      where: { id },
+    });
   }
 
   async createAdmin(createUserDto: CreateUserDto) {

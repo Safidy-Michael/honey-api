@@ -18,10 +18,9 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-@Get('profile')
-async getProfile(@Request() req: ExpressRequest) {
-  const user = req.user as { userId: string } & typeof req.user;
-  
-  return this.authService.profile(Number(user.userId));
-}
+  @Get('profile')
+  async getProfile(@Request() req: ExpressRequest) {
+    const user = req.user as { userId: string };
+    return this.authService.profile(user.userId);
+  }
 }

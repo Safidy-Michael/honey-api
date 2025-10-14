@@ -49,7 +49,8 @@ export class AuthService {
   };
 }
 
-  async profile(userId: number) {
-    return this.usersService.findOne(userId);
-  }
+  async profile(userId: string) {
+  return this.usersService.findOne(userId);
+}
+
 }
