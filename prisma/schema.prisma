@@ -12,50 +12,56 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      String   @default("client") // client | admin
+  role      String   @default("client")
   createdAt DateTime @default(now()) @map("created_at")
   orders    Order[]
 
+  @@index([email])
+  @@index([name])
   @@map("User")
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          String      @id @default(uuid())
   name        String
   description String?
   price       Float
-  stock       Int      @default(0)
+  stock       Int         @default(0)
   badge       String?
-  imageUrl    String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @default(now()) @map("updated_at")
+  imageUrl    String?     @map("image_url")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at")
   orderItems  OrderItem[]
 
+  @@index([name])
+  @@index([badge])
   @@map("Product")
 }
 
-
-
 model Order {
-  id        Int         @id @default(autoincrement())
-  user      User        @relation(fields: [userId], references: [id])
-  userId    Int
-  total     Float
-  status    String      @default("pending")
-  createdAt DateTime    @default(now()) @map("created_at")
+  id         String      @id @default(uuid())
+  user       User        @relation(fields: [userId], references: [id])
+  userId     String
+  total      Float
+  status     String      @default("pending")
+  createdAt  DateTime    @default(now()) @map("created_at")
   orderItems OrderItem[]
 
+  @@index([status])
+  @@index([userId])
   @@map("Order")
 }
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
+  id        String  @id @default(uuid())
   order     Order   @relation(fields: [orderId], references: [id])
-  orderId   Int
+  orderId   String
   product   Product @relation(fields: [productId], references: [id])
-  productId Int
+  productId String
   quantity  Int
   price     Float
 
+  @@index([orderId])
+  @@index([productId])
   @@map("OrderItem")
 }
