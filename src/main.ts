@@ -10,7 +10,9 @@ async function bootstrap() {
 
   const allowedOrigins = [
     'http://localhost:8080', 
-    'https://honey-bloom-frontend.onrender.com', 
+    //'https://honey-bloom-frontend.onrender.com', 
+    'https://honey-bloom-frontend-crch.vercel.app',
+    'https://honey-bloom-frontend-crch-7carzecrn-safidys-projects-7629980e.vercel.app',
   ];
 
   app.enableCors({
