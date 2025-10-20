@@ -44,6 +44,17 @@ export class CreateOrderDto {
   @Type(() => CreateOrderItemDto)
   @ArrayMinSize(1)
   items!: CreateOrderItemDto[];
+  @IsString()
+  @IsOptional()
+  address?: string;
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @IsString()
+  @IsOptional()
+  note?: string;
 }
 
 export class UpdateOrderStatusDto {
