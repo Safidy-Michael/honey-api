@@ -1,7 +1,6 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested, ArrayMinSize } from 'class-validator';
 import { Type } from 'class-transformer';
 
-
 export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
@@ -35,7 +34,6 @@ export class CreateOrderItemDto {
   quantity!: number;
 }
 
-
 export class CreateOrderDto {
   @IsString()
   userId!: string;
@@ -44,6 +42,35 @@ export class CreateOrderDto {
   @Type(() => CreateOrderItemDto)
   @ArrayMinSize(1)
   items!: CreateOrderItemDto[];
+
+  @IsString()
+  @IsNotEmpty()
+  address?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  phone?: string;
+
+  @IsString()
+  note?: string;
+}
+
+export class UpdateOrderDto {
+  @IsString()
+  @IsOptional()
+  status?: string;
+
+  @IsString()
+  @IsOptional()
+  address?: string;
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @IsString()
+  @IsOptional()
+  note?: string;
 }
 
 export class UpdateOrderStatusDto {

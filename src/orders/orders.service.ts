@@ -24,6 +24,9 @@ export class OrdersService {
         userId: dto.userId,
         total: orderTotal,
         status: 'pending',
+        address: dto.address,
+        phone: dto.phone,
+        note: dto.note,
       },
     });
 
@@ -73,6 +76,9 @@ export class OrdersService {
       where: { id },
       data: {
         ...(dto.status ? { status: dto.status } : {}),
+        ...(dto.address ? { address: dto.address } : {}),
+        ...(dto.phone ? { phone: dto.phone } : {}),
+        ...(dto.note ? { note: dto.note } : {}),
       },
       include: { orderItems: true },
     });
