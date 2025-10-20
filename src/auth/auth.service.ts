@@ -10,47 +10,59 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(name: string, email: string, password: string,) {
+  async register(name: string, email: string, password: string) {
     const hashedPassword = await bcrypt.hash(password, 10);
     return this.usersService.create({
       name,
       email,
       password: hashedPassword,
-      role: 'user', 
+      role: 'user',
     });
   }
 
   async validateUser(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
-      const {...result } = user;
+      const { ...result } = user;
       return result;
     }
     return null;
   }
 
   async login(email: string, password: string) {
-  const user = await this.usersService.findByEmail(email);
-  if (!user) throw new UnauthorizedException('Invalid credentials');
+    const user = await this.usersService.findByEmail(email);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
 
-  const payload = { sub: user.id, email: user.email, role: user.role };
+    const payload = { sub: user.id, email: user.email, role: user.role };
 
-  return {
-    access_token: this.jwtService.sign(payload),
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    },
-  };
-}
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    };
+  }
 
   async profile(userId: string) {
-  return this.usersService.findOne(userId);
-}
+    return this.usersService.findOne(userId);
+  }
 
+  async verifyCaptcha(token: string): Promise<boolean> {
+    const secret = process.env.RECAPTCHA_SECRET_KEY;
+    const response = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`,
+      {
+        method: 'POST',
+      },
+    );
+
+    const data = await response.json();
+    return data.success === true;
+  }
 }

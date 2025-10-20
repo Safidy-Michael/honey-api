@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt.guard';
 import { Request as ExpressRequest } from 'express';
@@ -13,7 +13,12 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() body: { email: string; password: string }) {
+  async login(@Body() body: { email: string; password: string; captchaToken: string }) {
+    const isValidCaptcha = await this.authService.verifyCaptcha(body.captchaToken);
+    if (!isValidCaptcha) {
+      throw new UnauthorizedException('Captcha invalide');
+    }
+
     return this.authService.login(body.email, body.password);
   }
 
