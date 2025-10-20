@@ -55,14 +55,22 @@ export class AuthService {
 
   async verifyCaptcha(token: string): Promise<boolean> {
     const secret = process.env.RECAPTCHA_SECRET_KEY;
+
+    if (!secret) {
+      console.error("RECAPTCHA_SECRET_KEY manquante !");
+      return false;
+    }
+    console.log("RECAPTCHA_SECRET_KEY présente");
+    console.log("Token captcha reçu:", token);
+
     const response = await fetch(
       `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`,
-      {
-        method: 'POST',
-      },
+      { method: 'POST' },
     );
 
     const data = await response.json();
+    console.log("reCAPTCHA verification result:", data);
+
     return data.success === true;
   }
 }
