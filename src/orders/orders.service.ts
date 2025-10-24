@@ -63,6 +63,13 @@ export class OrdersService {
       include: { orderItems: true },
     });
   }
+  findByUser(userId: string) {
+    return this.prisma.order.findMany({
+      where: { userId },
+      include: { orderItems: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 
   remove(id: string) {
     return this.prisma.order.delete({ where: { id } });

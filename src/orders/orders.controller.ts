@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Param, Body, Patch, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Body, Patch, UseGuards, Req } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
@@ -22,6 +22,14 @@ export class OrdersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);
+  }
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  myOrders(@Req() req: Request) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const userId = req.user.id;
+    return this.ordersService.findByUser(userId);
   }
 
   @Patch(':id')
