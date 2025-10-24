@@ -18,18 +18,21 @@ export class OrdersController {
   findAll() {
     return this.ordersService.findAll();
   }
+  
+  @Get('me')
+@UseGuards(JwtAuthGuard)
+async myOrders(@Req() req: any) {
+  console.log('REQ USER:', req.user);
+  const userId = req.user.userId;
+  console.log('Fetching orders for userId:', userId);
+  const orders = await this.ordersService.findByUser(userId);
+  console.log('Orders found:', orders);
+  return orders;
+}
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);
-  }
-  @Get('me')
-  @UseGuards(JwtAuthGuard)
-  myOrders(@Req() req: Request) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const userId = req.user.id;
-    return this.ordersService.findByUser(userId);
   }
 
   @Patch(':id')
