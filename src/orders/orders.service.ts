@@ -12,7 +12,15 @@ export class OrdersService {
         const product = await this.prisma.product.findUnique({
           where: { id: item.productId },
         });
-        if (!product) throw new Error('Product not found');
+
+        if (!product) throw new Error('Produit introuvable');
+        if (product.stock <= 0)
+          throw new Error(`Le produit ${product.name} est en rupture de stock`);
+        if (item.quantity > product.stock)
+          throw new Error(
+            `Stock insuffisant pour ${product.name}. Disponible : ${product.stock}`,
+          );
+
         return product.price * item.quantity;
       }),
     );
@@ -35,7 +43,13 @@ export class OrdersService {
         const product = await this.prisma.product.findUnique({
           where: { id: item.productId },
         });
-        if (!product) throw new Error('Product not found');
+        if (!product) throw new Error('Produit introuvable');
+
+        await this.prisma.product.update({
+          where: { id: item.productId },
+          data: { stock: product.stock - item.quantity },
+        });
+
         return this.prisma.orderItem.create({
           data: {
             orderId: order.id,
@@ -63,6 +77,7 @@ export class OrdersService {
       include: { orderItems: true },
     });
   }
+
   findByUser(userId: string) {
     return this.prisma.order.findMany({
       where: { userId },
@@ -75,7 +90,10 @@ export class OrdersService {
     return this.prisma.order.delete({ where: { id } });
   }
 
-  async patchUpdate(id: string, dto: Partial<CreateOrderDto> & { status?: string }) {
+  async patchUpdate(
+    id: string,
+    dto: Partial<CreateOrderDto> & { status?: string },
+  ) {
     const order = await this.prisma.order.findUnique({ where: { id } });
     if (!order) throw new Error('Order not found');
 
