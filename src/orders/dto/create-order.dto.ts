@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested, ArrayMinSize } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested, ArrayMinSize, Matches } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateProductDto {
@@ -49,6 +49,9 @@ export class CreateOrderDto {
 
   @IsString()
   @IsNotEmpty()
+  @Matches(/^(?:\+261|0)\d{9}$/, {
+    message: 'Le numéro de téléphone doit être valide (ex: +261XXXXXXXXX ou 0XXXXXXXXX)',
+  })
   phone?: string;
 
   @IsString()
@@ -66,6 +69,9 @@ export class UpdateOrderDto {
 
   @IsString()
   @IsOptional()
+  @Matches(/^(?:\+261|0)\d{9}$/, {
+    message: 'Le numéro de téléphone doit être valide (ex: +261XXXXXXXXX ou 0XXXXXXXXX)',
+  })
   phone?: string;
 
   @IsString()
