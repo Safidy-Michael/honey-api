@@ -5,10 +5,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { ValidationPipe } from '@nestjs/common';
 import serverless from 'serverless-http';
-import * as express from 'express';
 
 async function createApp() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, new express());
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors({
     origin: ['https://honey-bloom-frontend-crch.vercel.app', 'http://localhost:8080'],
     methods: ['GET','HEAD','PUT','PATCH','POST','DELETE','OPTIONS'],
