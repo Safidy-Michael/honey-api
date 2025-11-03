@@ -1,13 +1,15 @@
+import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './src/app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import * as express from 'express';
 import { Request, Response } from 'express';
+import { createServer, Server } from 'http';
 
-let cachedApp: express.Express;
+let cachedServer: Server;
 
 async function bootstrapServer() {
-  if (!cachedApp) {
+  if (!cachedServer) {
     const expressApp = express();
     const adapter = new ExpressAdapter(expressApp);
     const app = await NestFactory.create(AppModule, adapter);
@@ -19,13 +21,13 @@ async function bootstrapServer() {
     });
 
     await app.init();
-    cachedApp = expressApp;
+
+    cachedServer = createServer(expressApp);
   }
-  return cachedApp;
+  return cachedServer;
 }
 
-
 export default async function handler(req: Request, res: Response) {
-  const app = await bootstrapServer();
-  return app(req, res);
+  const server = await bootstrapServer();
+  server.emit('request', req, res);
 }
