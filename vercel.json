@@ -2,14 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    },
-    {
-      "src": "dist/vercel-serverless.js",
+      "src": "src/vercel-serverless.ts",
       "use": "@vercel/node"
     }
   ]
