@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested, ArrayMinSize } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested, ArrayMinSize, IsUUID, IsInt, Min, MaxLength, MinLength, IsPhoneNumber } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateProductDto {
@@ -27,15 +27,16 @@ export class CreateProductDto {
 }
 
 export class CreateOrderItemDto {
-  @IsString()
+  @IsUUID()
   productId!: string;
 
-  @IsNumber()
+  @IsInt()
+  @Min(1)
   quantity!: number;
 }
 
 export class CreateOrderDto {
-  @IsString()
+  @IsUUID()
   userId!: string;
 
   @ValidateNested({ each: true })
@@ -43,15 +44,14 @@ export class CreateOrderDto {
   @ArrayMinSize(1)
   items!: CreateOrderItemDto[];
 
-  @IsString()
+  @IsPhoneNumber('MG', {
+    message: 'Le numéro de téléphone doit être un format malgache valide'
+  })
   @IsNotEmpty()
-  address?: string;
+  phone!: string;
 
   @IsString()
-  @IsNotEmpty()
-  phone?: string;
-
-  @IsString()
+  @IsOptional()
   note?: string;
 }
 
