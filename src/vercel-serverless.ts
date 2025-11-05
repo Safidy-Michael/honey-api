@@ -3,13 +3,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import express from 'express';
-import { Request, Response } from 'express';
-import { createServer, Server } from 'http';
 
-let cachedServer: Server;
+let cachedApp: express.Express;
 
-async function bootstrapServer() {
-  if (!cachedServer) {
+async function bootstrapServer(): Promise<express.Express> {
+  if (!cachedApp) {
     const expressApp = express();
     const adapter = new ExpressAdapter(expressApp);
     const app = await NestFactory.create(AppModule, adapter);
@@ -21,13 +19,13 @@ async function bootstrapServer() {
     });
 
     await app.init();
-
-    cachedServer = createServer(expressApp);
+    cachedApp = expressApp;
   }
-  return cachedServer;
+  return cachedApp;
 }
 
-export default async function handler(req: Request, res: Response) {
-  const server = await bootstrapServer();
-  server.emit('request', req, res);
+export default async function handler(req: express.Request, res: express.Response) {
+  const app = await bootstrapServer();
+  // The express app instance is a request handler function.
+  app(req, res);
 }
