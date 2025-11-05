@@ -12,11 +12,5 @@
       "src": "dist/vercel-serverless.js",
       "use": "@vercel/node"
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "dist/vercel-serverless.js"
-    }
   ]
 }
