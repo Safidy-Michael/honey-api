@@ -25,7 +25,13 @@ async function bootstrapServer(): Promise<express.Express> {
 }
 
 export default async function handler(req: express.Request, res: express.Response) {
+
+  console.log(`[HANDLER] Received request: ${req.method} ${req.url}`);
+
   const app = await bootstrapServer();
+
   // The express app instance is a request handler function.
+
   app(req, res);
+
 }
