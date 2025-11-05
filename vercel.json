@@ -1,13 +1,19 @@
 {
-  "functions": {
-    "api/index.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
+  "version": 2,
   "builds": [
-    { "src": "vercel-serverless.ts", "use": "@vercel/node" }
+    {
+      "src": "src/vercel-serverless.ts",
+      "use": "@vercel/node",
+      "config": {
+        "buildCommand": "npm run build",
+        "includeFiles": ["dist/**"]
+      }
+    }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "vercel-serverless.ts" }
+    {
+      "src": "/(.*)",
+      "dest": "src/vercel-serverless.ts"
+    }
   ]
 }
