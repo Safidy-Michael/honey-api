@@ -16,27 +16,39 @@ export class OrdersService {
         return product.price * item.quantity;
       }),
     );
-
     const orderTotal = total.reduce((a, b) => a + b, 0);
-
-    const order = await this.prisma.order.create({
-      data: {
-        userId: dto.userId,
-        total: orderTotal,
-        status: 'pending',
-        address: dto.address,
-        phone: dto.phone,
-        note: dto.note,
-      },
-    });
-
-    await Promise.all(
-      dto.items.map(async (item: CreateOrderItemDto) => {
-        const product = await this.prisma.product.findUnique({
+  
+    return this.prisma.$transaction(async (prisma) => {
+      const order = await prisma.order.create({
+        data: {
+          userId: dto.userId,
+          total: orderTotal,
+          status: 'pending',
+          address: dto.address,
+          phone: dto.phone,
+          note: dto.note,
+        },
+      });
+  
+      for (const item of dto.items) {
+        const product = await prisma.product.findUnique({
           where: { id: item.productId },
         });
-        if (!product) throw new Error('Product not found');
-        return this.prisma.orderItem.create({
+  
+        if (!product) {
+          throw new Error(`Product with ID ${item.productId} not found`);
+        }
+  
+        if (product.stock < item.quantity) {
+          throw new Error(`Not enough stock for product ${product.name}`);
+        }
+  
+        await prisma.product.update({
+          where: { id: item.productId },
+          data: { stock: product.stock - item.quantity },
+        });
+  
+        await prisma.orderItem.create({
           data: {
             orderId: order.id,
             productId: item.productId,
@@ -44,12 +56,12 @@ export class OrdersService {
             price: product.price,
           },
         });
-      }),
-    );
-
-    return this.prisma.order.findUnique({
-      where: { id: order.id },
-      include: { orderItems: true },
+      }
+  
+      return prisma.order.findUnique({
+        where: { id: order.id },
+        include: { orderItems: true },
+      });
     });
   }
 
