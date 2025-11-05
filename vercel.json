@@ -6,7 +6,7 @@
       "use": "@vercel/node",
       "config": {
         "buildCommand": "npm run build",
-        "includeFiles": ["dist/**"]
+        "includeFiles": ["dist/**", "prisma/**"]
       }
     }
   ],
