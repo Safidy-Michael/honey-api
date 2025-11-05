@@ -13,9 +13,10 @@ async function bootstrapServer(): Promise<express.Express> {
     const app = await NestFactory.create(AppModule, adapter);
 
     app.enableCors({
-      origin: '*',
-      methods: '*',
-      allowedHeaders: '*',
+      origin: ['https://honey-bloom-frontend-crch.vercel.app'],
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true,
     });
 
     await app.init();
@@ -25,13 +26,7 @@ async function bootstrapServer(): Promise<express.Express> {
 }
 
 export default async function handler(req: express.Request, res: express.Response) {
-
   console.log(`[HANDLER] Received request: ${req.method} ${req.url}`);
-
   const app = await bootstrapServer();
-
-  // The express app instance is a request handler function.
-
   app(req, res);
-
 }

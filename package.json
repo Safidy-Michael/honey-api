@@ -8,6 +8,7 @@
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main.js",
     "build": "prisma generate && nest build",
+    "vercel-build": "prisma generate && nest build",
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
